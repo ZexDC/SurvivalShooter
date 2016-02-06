@@ -3,68 +3,80 @@ using System.Collections;
 
 public class EnemyAttack : MonoBehaviour
 {
-    public float timeBetweenAttacks = 0.5f;
-    public int attackDamage = 10;
+    public float timeBetweenAttacks = 0.5f; // The time in seconds between each attack.
+    public int attackDamage = 10; // The amount of health taken away per attack.
+
+    private Animator anim; // Reference to the animator component.
+    private GameObject player; // Reference to the player GameObject.
+    private PlayerHealth playerHealth; // Reference to the player's health.
+    //private EnemyHealth enemyHealth; // Reference to this enemy's health.
+    private bool playerInRange; // Whether player is within the trigger collider and can be attacked.
+    private float timer; // Timer for counting up to the next attack.
 
 
-    Animator anim;
-    GameObject player;
-    PlayerHealth playerHealth;
-    //EnemyHealth enemyHealth;
-    bool playerInRange;
-    float timer;
-
-
-    void Awake ()
+    private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag ("Player");
-        playerHealth = player.GetComponent <PlayerHealth> ();
+        // Setting up the references.
+        player = GameObject.FindGameObjectWithTag("Player");
+        playerHealth = player.GetComponent <PlayerHealth>();
         //enemyHealth = GetComponent<EnemyHealth>();
-        anim = GetComponent <Animator> ();
+        anim = GetComponent <Animator>();
     }
 
 
-    void OnTriggerEnter (Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject == player)
+        // If the entering collider is the player...
+        if (other.gameObject == player)
         {
+            // ... the player is in range.
             playerInRange = true;
         }
     }
 
 
-    void OnTriggerExit (Collider other)
+    private void OnTriggerExit(Collider other)
     {
-        if(other.gameObject == player)
+        // If the exiting collider is the player...
+        if (other.gameObject == player)
         {
+            // ... the player is no longer in range.
             playerInRange = false;
         }
     }
 
 
-    void Update ()
+    private void Update()
     {
+        // Add the time since Update was last called to the timer.
         timer += Time.deltaTime;
 
-        if(timer >= timeBetweenAttacks && playerInRange/* && enemyHealth.currentHealth > 0*/)
+        // If the timer exceeds the time between attacks, the player is in range and this enemy is alive...
+        if (timer >= timeBetweenAttacks && playerInRange/* && enemyHealth.currentHealth > 0*/)
         {
-            Attack ();
+            // ... attack.
+            Attack();
         }
 
-        if(playerHealth.currentHealth <= 0)
+        // If the player has zero or less health...
+        if (playerHealth.currentHealth <= 0)
         {
-            anim.SetTrigger ("PlayerDead");
+            // ... tell the animator the player is dead.
+            anim.SetTrigger("PlayerDead");
         }
     }
 
 
-    void Attack ()
+    private void Attack()
     {
+        // Reset the timer.
         timer = 0f;
 
-        if(playerHealth.currentHealth > 0)
+        // If the player has health to lose...
+        if (playerHealth.currentHealth > 0)
         {
-            playerHealth.TakeDamage (attackDamage);
+            // ... damage the player.
+            playerHealth.TakeDamage(attackDamage);
         }
     }
 }
