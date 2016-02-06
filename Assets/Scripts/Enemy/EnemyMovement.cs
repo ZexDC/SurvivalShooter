@@ -4,33 +4,33 @@ using System.Collections;
 public class EnemyMovement : MonoBehaviour
 {
     private Transform player; // Reference to the player's position.
-    //PlayerHealth playerHealth; // Reference to the player's health.
-    //EnemyHealth enemyHealth; // Reference to this enemy's health.
+    private PlayerHealth playerHealth; // Reference to the player's health.
+    private EnemyHealth enemyHealth; // Reference to this enemy's health.
     private NavMeshAgent nav; // Reference to the nav mesh agent.
 
 
-    void Awake()
+    private void Awake()
     {
         // Set up the references.
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        //playerHealth = player.GetComponent <PlayerHealth>();
-        //enemyHealth = GetComponent <EnemyHealth>();
-        nav = GetComponent <NavMeshAgent>();
+        playerHealth = player.GetComponent<PlayerHealth>();
+        enemyHealth = GetComponent<EnemyHealth>();
+        nav = GetComponent<NavMeshAgent>();
     }
 
 
-    void Update()
+    private void Update()
     {
         // If the enemy and the player have health left...
-        //if(enemyHealth.currentHealth > 0 && playerHealth.currentHealth > 0)
-        //{
-        nav.SetDestination(player.position);
-        //}
+        if (enemyHealth.currentHealth > 0 && playerHealth.currentHealth > 0)
+        {
+            nav.SetDestination(player.position);
+        }
         // Otherwise...
-        //else
-        //{
-              // ... disable the nav mesh agent.
-        //    nav.enabled = false;
-        //}
+        else
+        {
+            // ... disable the nav mesh agent.
+            nav.enabled = false;
+        }
     }
 }
